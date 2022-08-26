@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>cn.knightzz</groupId>
+    <artifactId>ssm-codes-01</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <spring.version>5.2.10.RELEASE</spring.version>
+    </properties>
+
+    <!-- 设置打包方式 -->
+    <packaging>war</packaging>
+
+
+    <!-- 添加相关依赖-->
+    <dependencies>
+        <!--
+        spring各组件模块作用介绍 : https://blog.csdn.net/lijunliang2017/article/details/121749252
+        -->
+        <!--
+        用来实现Spring上下文功能，及Spring的IOC，例如初始化Spring容器时所使用的ApplicationContext接口及常用的抽象实现类
+        AnnotationConfigApplicatoinContext或者ClasspathXmlApplicationContext等。
+        -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+    </dependencies>
+
+
+</project>
