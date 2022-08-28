@@ -5,7 +5,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * @author 王天赐
@@ -19,8 +18,9 @@ import java.io.InputStream;
 public class ApplicationTest {
 
     public static void main(String[] args) throws IOException {
-        ApplicationContext context = new ClassPathXmlApplicationContext("spring-beans.xml");
-        Person  person = (Person) context.getBean("person");
+        ApplicationContext context = new ClassPathXmlApplicationContext("config/spring-beans.xml");
+        Person  person = (Person) context.getBean("personBySet");
         System.out.println(person);
+
     }
 }

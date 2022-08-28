@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd">
+    <beans>
+        <!--
+            使用get/set方法注入 , 这种方式必须有空参构造器 public Person()
+            并且要有get/set方法
+        -->
+        <bean id="personBySet" class="cn.knightzz.entity.Person">
+            <property name="name" value="zhangsan"/>
+            <property name="age" value="18"/>
+        </bean>
+        <!--
+            使用构造器注入, 这种方式必须实现 public Person(String name, Integer age) {} 构造方法
+        -->
+        <bean id="personByCon" class="cn.knightzz.entity.Person">
+            <constructor-arg name="name" value="lisi"/>
+            <constructor-arg name="age" value="12"/>
+        </bean>
+    </beans>
+</beans>

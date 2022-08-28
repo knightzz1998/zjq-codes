@@ -23,18 +23,29 @@
     <dependencies>
         <!--
         spring各组件模块作用介绍 : https://blog.csdn.net/lijunliang2017/article/details/121749252
-        -->
-        <!--
+
         用来实现Spring上下文功能，及Spring的IOC，例如初始化Spring容器时所使用的ApplicationContext接口及常用的抽象实现类
         AnnotationConfigApplicatoinContext或者ClasspathXmlApplicationContext等。
         -->
+        <!--<dependency>-->
+        <!--    <groupId>org.springframework</groupId>-->
+        <!--    <artifactId>spring-context</artifactId>-->
+        <!--    <version>${spring.version}</version>-->
+        <!--</dependency>-->
+
+        <!-- Spring MVC 依赖-->
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
+            <artifactId>spring-webmvc</artifactId>
             <version>${spring.version}</version>
         </dependency>
 
-    </dependencies>
+        <dependency>
+            <groupId>org.thymeleaf</groupId>
+            <artifactId>thymeleaf-spring5</artifactId>
+            <version>3.0.15.RELEASE</version>
+        </dependency>
 
+    </dependencies>
 
 </project>
