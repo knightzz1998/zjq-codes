@@ -12,8 +12,19 @@
     / <==> http://localhost:8080/ssm/
     ==> hello ==> http://localhost:8080/ssm/hello
 -->
-<a href="hello">hello</a>
+<a href="templates/hello.html">hello</a>
 
+<br>
+
+<!--
+    /conflict 和 conflict 的区别
+    /conflict == http://localhost:8069/conflict
+    conflict == http://localhost:8069/ssm/conflict
+-->
+<a href="conflict.html">conflict</a>
+
+
+<br>
 <!-- 这里就会访问 http://localhost:8080/ssm/template/a.html -->
 <a href="template/a.html">a.html</a>
 </body>

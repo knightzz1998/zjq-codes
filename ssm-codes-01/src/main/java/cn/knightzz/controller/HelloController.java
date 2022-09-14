@@ -1,7 +1,10 @@
 package cn.knightzz.controller;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * @author 王天赐
@@ -17,7 +20,14 @@ public class HelloController {
 
     @GetMapping("/hello")
     public String hello() {
-        return "hello222";
+        System.out.println("hello================");
+        return "hello2";
+    }
+
+    @GetMapping("/hello.html")
+    public String hell2() {
+        System.out.println("hello================2");
+        return "hello.html222";
     }
 
 }
