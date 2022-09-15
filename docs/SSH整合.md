@@ -882,3 +882,421 @@ public class HibernateTest {
 
 
 **SpringMVC 和前面两个关系不大! 注意** 
+
+
+
+
+
+### 环境搭建
+
+
+
+#### 添加依赖 
+
+
+
+添加 SpringMVC 使用的依赖 
+
+```xml
+
+		<!--整合 Spring MVC -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>jsp-api</artifactId>
+            <version>2.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>jstl</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
+```
+
+我们用到的jsp以及el表达式就需要 最后两个依赖 
+
+
+
+#### 创建配置文件
+
+
+
+<img src="https://haloos.oss-cn-beijing.aliyuncs.com/typero/image-20220915185509216.png" alt="image-20220915185509216" style="zoom:50%;" />
+
+
+
+红框部分是我们需要创建或者修改的文件, 我们首先创建一个 spring-mvc.xml 的文件, 可以空着 , 以及 pages 下面的一些列的文件夹或者目录
+
+
+
+
+
+#### 修改web.xml配置
+
+
+
+web.xml 中的配置主要分为以下几个部分 : 
+
+- SpringMVC核心配置 DispatcherServlet
+- spring与springmvc文件映射的配置
+- 其他的监听器或者中英文处理的配置
+- hibernate的配置
+
+
+
+首先是 DispacherServelet , 这个东西的作用是让原本应该是Servlet处理的请求, 把它拦截下来交给 SpringMVC
+
+
+
+```xml
+    <!--前端控制器-->
+    <servlet>
+        <servlet-name>DispatcherServlet</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:spring-mvc.xml</param-value>
+        </init-param>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DispatcherServlet</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+```
+
+除此之外, 还包含了 `spring-mvc.xml` 这个文件地址的映射
+
+
+
+----
+
+
+
+其次是 一些其他的配置,比如 中文处理的配置, applicationContext.xml 地址配置, `ContextLoaderListener` 的配置 : 
+
+```xml
+    <!--post中文处理-->
+    <filter>
+        <filter-name>CharacterEncodingFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>CharacterEncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <!--配置spring的监听器-->
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+    <!-- Spring 配置 applicationContext.xml 的位置 -->
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath:applicationContext.xml</param-value>
+    </context-param>
+```
+
+从上往下 : 
+
+- 第一个是处理中文的, 防止中文乱码
+- 第二个是 ContextLoaderListener监听器的作用就是启动Web容器时，自动装配ApplicationContext的配置信息。 因为它实现了ServletContextListener这个接口，在web.xml配置这个监听器，启动容器时，就会默认执行它实现的方法
+-  ContextLoaderListener 和 applicationContext.xml 这俩是一起的
+
+
+
+----
+
+
+
+最后是 Hibernate的配置 , 这个是要加上的, 具体作用可以找找博客看看, 不加会报错..
+
+
+
+```xml
+    <!--以下是与Hibernate的延迟有关的配置-->
+    <!-- 这个是必须要加的, 不然会报错
+        https://blog.csdn.net/zhangwenjia1212/article/details/84697365
+    -->
+    <filter>
+        <filter-name>openSessionInView</filter-name>
+        <filter-class>org.springframework.orm.hibernate4.support.OpenSessionInViewFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>openSessionInView</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+```
+
+
+
+OpenSessionInViewFilter的主要功能是用来把一个Hibernate Session和一次完整的请求过程对应的线程相绑定。 目的是为了实现"Open Session in. 例如： 它允许在事务提交之后延迟加载显示所需要的对象。
+
+
+
+#### spring-mvc的配置
+
+
+
+spring-mvc 的配置比较简单 : 
+
+- 配置注解扫描 : 扫描 @Controller 这样的注解
+- 视图解析器, 为Controller跳转页面的时候, 加上前后缀的
+- 处理器适配器, 增强了功能, 支持 json 的读写
+- 静态资源的处理
+
+
+
+```xml
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd">
+    <!--配置注解扫描-->
+    <context:component-scan base-package="cn.knightzz"/>
+
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <!-- 用于解析视图名, /pages/success.jsp => 直接使用 success 即可-->
+        <property name="prefix" value="/pages/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <!-- 处理器适配器, 增强了功能, 支持 json 的读写-->
+    <mvc:annotation-driven/>
+
+
+    <!-- 返回物理视图的配置 -->
+    <!--
+        加上这个以后, Controller里的所有的视图 , 比如
+        ModelAndView.setViewName("student") == /pages/student.jsp
+    -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/pages/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <!--在springmvc配置文件中开启DefaultServlet处理静态资源-->
+    <!--
+        <mvc:default-servlet-handler/>
+        
+    -->
+
+    <!--
+        通过 location 属性指定静态资源的位置
+        由于 location 属性是 Resource 类型，因此可以使用诸如 “classpath:” 等的资源前缀指定资源位置。
+        传统的 Web 容器的静态资源只能放在 Web 容器的根路径下，<mvc:resources/>打破了这个限制。
+        http://localhost:8769/ssh/pages/css/student.css 会被 匹配到 webapp/pages/css
+        mapping 的 / 是 http://localhost:8769/ssh
+        注意 location 不能写成 /pages/css , 必须写成 /pages/css/ , 否则直接 404
+    -->
+    <mvc:resources mapping="/pages/js/*" location="/pages/js/"/>
+    <mvc:resources mapping="/pages/css/*" location="/pages/css/"/>
+    <mvc:resources mapping="/pages/images/*" location="/pages/images/"/>
+</beans>
+
+```
+
+
+
+有几点需要提到的是 : ` <mvc:resources mapping="/js/*" location="/pages/js"/>` :
+
+- mapping 是 浏览器地址栏请求的那个路径. location是 webapp 目录下的那个路径
+- mapping 的 / 是 `http://localhost:8769/ssh/` 
+- location 的 / 是 `webapp/`
+- ` <mvc:default-servlet-handler/>` 这个的作用和  <mvc:resources  是一样的, 只不过是开启了一个 默认的 Servlet来处理静态资源 
+- [SpringMVC-----静态资源映射](https://blog.csdn.net/qq_48788523/article/details/122286304)
+-  `http://localhost:8769/ssh/pages/css/student.css` 会被 匹配到 webapp/pages/css
+
+
+
+
+
+### 代码测试
+
+
+
+#### controller 
+
+
+
+```java
+package cn.knightzz.controller;
+
+import cn.knightzz.dao.StudentDao;
+import cn.knightzz.entity.Student;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+import java.util.List;
+
+/**
+ * @author 王天赐
+ * @title: StudentController
+ * @projectName zjq-codes
+ * @description:
+ * @website <a href="http://knightzz.cn/">http://knightzz.cn/</a>
+ * @github <a href="https://github.com/knightzz1998">https://github.com/knightzz1998</a>
+ * @create: 2022-09-15 18:24
+ */
+@Controller
+public class StudentController {
+
+    @Autowired
+    StudentDao studentDao;
+
+    @RequestMapping("/student")
+    public ModelAndView findAll() {
+       
+        ModelAndView mav = new ModelAndView();
+        List<Student> students = studentDao.findAll();
+        mav.addObject("students", students);
+        mav.setViewName("student");
+        
+        return mav;
+    }
+
+}
+
+```
+
+
+
+controller 部分很简单, 需要注意的是, 跳转页面有很多方法, 比如 使用 ModelAndView, 或者使用 Model , 或者其他的方法等等
+
+
+
+#### student.jsp
+
+
+
+```jsp
+<%--
+  Created by IntelliJ IDEA.
+  User: knight'z'z
+  Date: 2022/9/15
+  Time: 18:17
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%-- jstl 标签--%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<html>
+<head>
+	<title>学生</title>
+	<link href="${pageContext.request.contextPath}/pages/css/student.css" rel="stylesheet">
+</head>
+<body>
+
+<h2 class="title">学生管理系统</h2>
+<a>添加</a>
+<table>
+	<tr>
+		<th>编号</th>
+		<th>姓名</th>
+		<th>年龄</th>
+	</tr>
+	<c:forEach items="${students}" var="student">
+		<tr>
+			<td>${student.id}</td>
+			<td>${student.name}</td>
+			<td>${student.age}</td>
+			<td><a  href="#">修改</a>&nbsp;<a class="btn btn-default btn-sm" href="#">删除</a></td>
+		</tr>
+	</c:forEach>
+
+</table>
+
+</body>
+</html>
+
+```
+
+
+
+需要注意的点有一些 : 
+
+- 引入js或者css的时候 `<link href="${pageContext.request.contextPath}/pages/css/student.css" rel="stylesheet">` rel 别忘了, 不然不显示 
+- 要使用 `${pageContext.request.contextPath}` 这个其实相当于你发起了一次请求 , 等价于  `<link href="http://localhost:8769/ssh/pages/css/student.css`
+
+- 其次就是 使用 jstl 或者el 表达式, 需要引入对应的标签 `<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>` 
+
+
+
+student.css : 
+
+```css
+.title {
+    color: rebeccapurple;
+    font-size: 100px;
+}
+```
+
+
+
+
+
+#### index.jsp
+
+
+
+```jsp
+<html>
+<body>
+<h2>Hello World!</h2>
+
+<a href="${pageContext.request.contextPath}/student">Student</a>
+
+</body>
+</html>
+
+```
+
+
+
+点击 Student 即可跳转
+
+
+
+所有的文件目录结构 
+
+
+
+<img src="https://haloos.oss-cn-beijing.aliyuncs.com/typero/image-20220915194231706.png" alt="image-20220915194231706" style="zoom:50%;" />
+
+
+
+#### 测试 
+
+
+
+全部配置完成以后, 点击 上方 Run 菜单, 添加配置 
+
+<img src="https://haloos.oss-cn-beijing.aliyuncs.com/typero/image-20220915194345751.png" alt="image-20220915194345751" style="zoom:50%;" />
+
+
+
+注意选的是 Tomact Server , 不是 Tomact EE Server

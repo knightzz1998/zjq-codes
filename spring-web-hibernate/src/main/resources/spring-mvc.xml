@@ -1,0 +1,51 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd">
+    <!--配置注解扫描-->
+    <context:component-scan base-package="cn.knightzz"/>
+
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <!-- 用于解析视图名, /pages/success.jsp => 直接使用 success 即可-->
+        <property name="prefix" value="/pages/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <!-- 处理器适配器, 增强了功能, 支持 json 的读写-->
+    <mvc:annotation-driven/>
+
+
+    <!-- 返回物理视图的配置 -->
+    <!--
+        加上这个以后, Controller里的所有的视图 , 比如
+        ModelAndView.setViewName("student") == /pages/student.jsp
+    -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/pages/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <!--在springmvc配置文件中开启DefaultServlet处理静态资源-->
+    <!--
+        <mvc:default-servlet-handler/>
+
+    -->
+
+    <!--
+        通过 location 属性指定静态资源的位置
+        由于 location 属性是 Resource 类型，因此可以使用诸如 “classpath:” 等的资源前缀指定资源位置。
+        传统的 Web 容器的静态资源只能放在 Web 容器的根路径下，<mvc:resources/>打破了这个限制。
+        http://localhost:8769/ssh/pages/css/student.css 会被 匹配到 webapp/pages/css
+        mapping 的 / 是 http://localhost:8769/ssh
+        注意 location 不能写成 /pages/css , 必须写成 /pages/css/ , 否则直接 404
+    -->
+    <mvc:resources mapping="/pages/js/*" location="/pages/js/"/>
+    <mvc:resources mapping="/pages/css/*" location="/pages/css/"/>
+    <mvc:resources mapping="/pages/images/*" location="/pages/images/"/>
+</beans>
