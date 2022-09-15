@@ -4,13 +4,5 @@
         "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
     <session-factory>
-        <!--数据库连接url配置-->
-        <property name="connection.url">jdbc:mysql://localhost:3306/SSHBlog</property>
-        <!--数据库驱动配置-->
-        <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
-        <!--数据库用户名配置-->
-        <property name="connection.username">root</property>
-        <property name="connection.password">123456</property>
-        <!--数据库密码配置-->
     </session-factory>
 </hibernate-configuration>

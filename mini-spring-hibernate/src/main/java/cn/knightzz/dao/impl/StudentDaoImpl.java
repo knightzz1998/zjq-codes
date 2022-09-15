@@ -20,7 +20,7 @@ import java.util.List;
  * @create: 2022-09-15 12:05
  */
 @Repository
-@Transactional
+@Transactional()
 public class StudentDaoImpl implements StudentDao {
 
     @Autowired
@@ -28,7 +28,7 @@ public class StudentDaoImpl implements StudentDao {
 
     @Override
     public List<Student> findAll() {
-        Criteria criteria = sessionFactory.getCurrentSession().createCriteria("Student");
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Student.class);
         return criteria.list();
     }
 }
