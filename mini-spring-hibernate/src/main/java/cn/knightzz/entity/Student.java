@@ -1,5 +1,6 @@
 package cn.knightzz.entity;
 
+
 import javax.persistence.*;
 
 /**
@@ -9,7 +10,7 @@ import javax.persistence.*;
  * @description:
  * @website <a href="http://knightzz.cn/">http://knightzz.cn/</a>
  * @github <a href="https://github.com/knightzz1998">https://github.com/knightzz1998</a>
- * @create: 2022-09-15 09:37
+ * @create: 2022-09-15 12:01
  */
 @Entity
 @Table(name = "student")

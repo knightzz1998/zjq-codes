@@ -5,6 +5,7 @@ import cn.knightzz.entity.Student;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
@@ -19,7 +20,7 @@ import java.util.List;
  * @github <a href="https://github.com/knightzz1998">https://github.com/knightzz1998</a>
  * @create: 2022-09-15 09:44
  */
-@Repository
+@Component
 @Transactional
 public class StudentDaoImpl implements StudentDao {
 
@@ -27,8 +28,36 @@ public class StudentDaoImpl implements StudentDao {
     private SessionFactory sessionFactory;
 
     @Override
-    public List findAll() {
+    public List<Student> findAllStudent() {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Student.class);
         return criteria.list();
+    }
+
+    @Override
+    public void saveContact(Student Student) {
+        sessionFactory.getCurrentSession().save(Student);
+    }
+
+    @Override
+    public Student findById(int id) {
+        Student Student = (Student) sessionFactory.getCurrentSession().get(Student.class, id);
+        return Student;
+    }
+
+    @Override
+    public void deleteContact(int id) {
+        Student Student = findById(id);
+        sessionFactory.getCurrentSession().delete(Student);
+    }
+
+    @Override
+    public void updateContact(Student Student) {
+        sessionFactory.getCurrentSession().update(Student);
+    }
+
+    @Override
+    public List<Student> findByContactName(String name) {
+        String hql = "from Student c where c.name like '%" + name + "%'";
+        return sessionFactory.getCurrentSession().createQuery(hql).list();
     }
 }

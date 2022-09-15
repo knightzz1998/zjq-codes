@@ -19,6 +19,15 @@ public interface StudentDao {
      * 获取所有的Student对象
      * @return List集合
      */
-    public List<Student> findAll();
+    public List<Student> findAllStudent();
 
+    public void saveContact(Student Student);
+
+    public Student findById(int id);
+
+    public void deleteContact(int id);
+
+    public void updateContact(Student Student);
+
+    public List<Student> findByContactName(String name);
 }

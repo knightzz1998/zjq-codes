@@ -5,6 +5,8 @@ import cn.knightzz.entity.Student;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
@@ -21,16 +23,19 @@ import java.util.List;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class StudentDaoImplTest {
 
-    @Autowired
-    StudentDao studentDao;
+    //@Autowired
+    //StudentDao studentDao;
 
     @Test
     public void findAllStudent() {
 
-        List<Student> students = studentDao.findAllStudent();
-        for (Student student : students) {
-            System.out.println(student);
-        }
+        //List<Student> students = studentDao.findAllStudent();
+        //for (Student student : students) {
+        //    System.out.println(student);
+        //}
+
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("Application");
+
     }
 
     @Test

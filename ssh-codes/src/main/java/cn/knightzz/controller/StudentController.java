@@ -1,7 +1,14 @@
 package cn.knightzz.controller;
 
+import cn.knightzz.dao.StudentDao;
+import cn.knightzz.dao.impl.StudentDaoImpl;
+import cn.knightzz.entity.Student;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+import java.util.List;
 
 /**
  * @author 王天赐
@@ -15,5 +22,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/")
 public class StudentController {
-
+    //@Autowired
+    //private StudentDaoImpl studentDao;
+    //
+    //@RequestMapping("index")
+    //public ModelAndView indexPage() {
+    //    ModelAndView mav = new ModelAndView("index");
+    //    List<Student> students = studentDao.findAllStudent();
+    //    System.out.println(students.size());
+    //    mav.addObject("students", students);
+    //    return mav;
+    //}
 }
