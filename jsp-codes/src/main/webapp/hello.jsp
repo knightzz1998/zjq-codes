@@ -27,6 +27,7 @@
 --%>
 <h2>2 ${sessionScope.id}</h2>
 
+
 <a href="javascript:void(0)" onclick="toHelloServlet(${requestScope.id})"> 跳转到 HelloServlet </a>
 <a href="hello-servlet"> 跳转到 HelloServlet2 </a>
 
